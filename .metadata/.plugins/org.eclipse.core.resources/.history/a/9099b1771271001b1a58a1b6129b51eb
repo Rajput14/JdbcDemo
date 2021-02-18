@@ -1,0 +1,50 @@
+package com.valuemomentum.training.jdbcdemo;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+
+public class TransactionDemo {
+
+	public static void main(String[] args) throws Exception {
+		// TODO Auto-generated method stub
+
+		//for name method of class is used to register driverclass 
+		Class.forName("com.mysql.cj.jdbc.Driver");
+
+		//open a connection 
+		System.out.println("connecting to database..");
+		Connection    con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mysqljdbc","root","Utkarsh@1405");
+
+		//create a statement object using connection obj
+		Statement    stmt = con.createStatement();
+		
+		con.setAutoCommit(false);
+		
+		try {
+			int i1=stmt.executeUpdate("insert into candidate_skills values(100,6)");
+			int i2=stmt.executeUpdate("update skills set name='Ajax' where id=3");
+			int i3=stmt.executeUpdate("delete from candidates where id=80");
+			con.commit();
+			System.out.println("Transaction is success");
+		}
+		
+		catch(Exception e)
+		{
+			try
+			{
+				con.rollback();
+				System.out.println("Transaction is failed");
+			}
+			
+			catch(Exception ex)
+			{
+				System.out.println(ex);
+			}
+		}// end of catch
+		stmt.close();
+		con.close();
+		System.out.println("Connection is closed");
+	}
+
+}
